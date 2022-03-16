@@ -2,6 +2,7 @@ package com.example.mappractice5
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMapOptions
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -24,6 +25,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         var mMap = googleMap
         mMap.mapType=GoogleMap.MAP_TYPE_HYBRID
+
+        mMap.setOnMapLongClickListener { latLng->
+            Toast.makeText(this, "${latLng.latitude},${latLng.longitude}",Toast.LENGTH_SHORT).show()
+
+        }
+
     }
 }
 
