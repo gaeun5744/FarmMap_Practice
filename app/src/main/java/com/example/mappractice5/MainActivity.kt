@@ -3,6 +3,7 @@ package com.example.mappractice5
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.core.content.edit
 import com.google.android.gms.maps.GoogleMap
@@ -61,10 +62,23 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback{
         var mMap = googleMap
         mMap.mapType=GoogleMap.MAP_TYPE_HYBRID
 
+
         for(i in 0 until size){
+
             var arr= arrayListOf<String>(getStringArrayPref(i.toString()))
-            var position=LatLng(arr[0].toDouble(),arr[1].toDouble())
-            googleMap.addMarker(MarkerOptions().position(position).title("좌표"). snippet("위도 : ${arr[0]}, 경도 : ${arr[1]}"))
+            var positionX=""
+            var positionY=""
+
+            for(i in 17 until 34){
+                positionX+=arr[0][i]
+            }
+            for(i in 39 until 56){
+                positionY+=arr[0][i]
+            }
+
+
+            var position=LatLng(positionX.toDouble(),positionY.toDouble())
+            googleMap.addMarker(MarkerOptions().position(position).title("좌표"). snippet("위도 : ${positionX}, 경도 : ${positionY}"))
         }
 
 
@@ -79,6 +93,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback{
             setStringArrayPref(size.toString(),currentData)
 
             size+=1
+
+            var arr= arrayListOf<String>(getStringArrayPref(size.toString()))
+
+            Log.d("MainActivity","여기!!!!${arr[0][38]}+${arr[0][55]}///${arr[0]}")
 
 
             /*
