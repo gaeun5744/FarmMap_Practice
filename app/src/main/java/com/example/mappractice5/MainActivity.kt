@@ -57,6 +57,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback{
 
         var v=window.decorView
 
+
         screenShotButton.setOnClickListener {
             val bitmap=getScreenShotFromView(v)
             if (bitmap!=null){
@@ -66,6 +67,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback{
 
 
     }
+
 
     private fun getScreenShotFromView(v: View): Bitmap? {
         // create a bitmap object
@@ -133,8 +135,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback{
 
 
 
-
-
     override fun onMapReady(googleMap: GoogleMap) {
         fun setStringArrayPref(key: String, values: ArrayList<locationArray>) {
             val gson = Gson()
@@ -147,19 +147,21 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback{
 
         fun getStringArrayPref(key: String): String {
             val prefs = getSharedPreferences(key, Context.MODE_PRIVATE)
-            val json = prefs.getString(key, null)
+            val json = prefs.getString(key, "")
             val gson = Gson()
 
             //val storedData=Gson().fromJson(json,Array<locationArray>::class.java).toList() as ArrayList<locationArray>
 
-            val storedData: ArrayList<locationArray> = gson.fromJson(json,
-                object : TypeToken<ArrayList<locationArray>>() {}.type
-            )
+            Log.d("MainActivity","getArrayd의 json! : ${json}")
+            val typeToken=object :TypeToken<ArrayList<locationArray>>() {}.type
 
+            val storedData: ArrayList<locationArray> = gson.fromJson(json,typeToken)
 
             return storedData.toString()
         }
 
+        var list= arrayListOf<String>(getStringArrayPref(size.toString()))
+        Log.d("MainActivity","저장하고 나타낼 리스트! :  ${list}")
         var mMap = googleMap
         mMap.mapType=GoogleMap.MAP_TYPE_HYBRID
 
@@ -167,15 +169,44 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback{
         for(i in 0 until size){
 
             var arr= arrayListOf<String>(getStringArrayPref(i.toString()))
+
             var positionX=""
             var positionY=""
 
-            for(i in 17 until 34){
-                positionX+=arr[0][i]
+            var numberX=0
+            var numberY=0
+
+
+            for(i in 0 until arr[0].length){
+
+                numberX=i
+                numberY=i// x 시작
+                if(arr[0][i].toString()=="="){
+                    break
+                }
+
             }
-            for(i in 39 until 56){
-                positionY+=arr[0][i]
+
+
+            for(i in numberX+1 until arr[0].length){
+                if(arr[0][i].toString()==","){
+                    break
+                }
+                numberY+=1
+                positionX+=arr[0][i].toString()
+
             }
+
+            for(i in numberY+5 until arr[0].length){
+                if(arr[0][i].toString()==")"){
+                    break
+                }
+                    positionY+=arr[0][i].toString()
+            }
+
+
+
+            Log.d("MainActivity","좌표! : ${positionX}")
 
 
             var position=LatLng(positionX.toDouble(),positionY.toDouble())
@@ -193,11 +224,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback{
 
             setStringArrayPref(size.toString(),currentData)
 
-            size+=1
+
+
+
+            Log.d("MainActivity","현재!!! ${current}")
 
             var arr= arrayListOf<String>(getStringArrayPref(size.toString()))
+            size+=1
 
-            Log.d("MainActivity","여기!!!!${arr[0][38]}+${arr[0][55]}///${arr[0]}")
+
+
+            Log.d("MainActivity","여기!!!!${arr[0]}")
 
 
             /*
@@ -221,6 +258,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback{
         }
 
     }
+
+
+
+
+
+
 
 }
 
